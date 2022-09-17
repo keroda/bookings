@@ -1,0 +1,20 @@
+
+.notie-container { /* override notie styles here */
+    box-shadow: none;
+  }
+
+ .my-footer {
+      height: 5em;
+      background: #163b65;
+      margin-top: 1.5em;
+      padding: 1em;
+      color: white;
+      font-size: 80%;
+  }
+  .room-image {
+    max-width:50%;
+    margin-top: 1rem;
+  }
+  .redText {color:red;font-weight:600;}
+  .datepicker {z-index:2;}
+  .swal2-html-container {overflow: visible !important;}

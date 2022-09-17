@@ -10,21 +10,9 @@
 
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.0/dist/css/bootstrap.min.css" 
             integrity="sha384-B0vP5xmATw1+K9KRQjQERJvTumQW0nPEzvF6L/Z6nronJ3oUOFUFpCjEUQouq2+l" crossorigin="anonymous">
-
-        <style>
-            .my-footer {
-                height: 5em;
-                background: #163b65;
-                margin-top: 1.5em;
-                padding: 1em;
-                color: white;
-                font-size: 80%;
-            }
-            .room-image {
-              max-width:50%;
-              margin-top: 1rem;
-            }
-        </style>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.2.0/dist/css/datepicker-bs5.min.css">
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
+        <link rel="stylesheet" type="text/css" href="styles.css">
     </head>
 
     <body>
@@ -64,35 +52,35 @@
 </nav>
 
 <div class="container-fluid">
-       <!-- <div class="row">
-            <div class="col">
-                <h1 class="text-center mt-4">Make your reservation</h1>
-            </div>
-          </div>-->
-
-          <div class="row">
+         <div class="row">
             <div class="col-md-3"></div>
             <div class="col-md-6">
               <h1 class="mt-4">Make your reservation</h1>
-                <form action="reservation.html" method="get">
-                  <div class="row">
+                <form action="reservation.html" method="get" novalidate class="needs-validation">
+                  <div class="row" id="rDates">
+                
                     <div class="col-md-3">
-                  
+                
+                      
                   <div class="mb-3">
                     <label for="start" class="form-label">Starting date</label>
-                    <input type="date" name="start" class="form-control" id="start" aria-describedby="startHelp" required>
-                    <div id="startHelp" class="form-text">Starting date here.</div>
+                    <input type="text" autocomplete="off" name="start" class="form-control" id="start" required placeholder="Arrival">
+                    
                   </div>
                 </div>
 
                 <div class="col-md-3">
                   <div class="mb-3">
                     <label for="end" class="form-label">Ending date</label>
-                    <input type="date" name="end" class="form-control" id="start" aria-describedby="endHelp" required>
-                    <div id="endHelp" class="form-text">Ending date here.</div>
+                    <input type="text" autocomplete="off" name="end" class="form-control" id="start" required placeholder="Departure">
+                   
                   </div>
                 </div>
+
+      
+
               </div>
+
 
                 <div class="row">
                   <div class="col">
@@ -101,9 +89,12 @@
               </div>
 
                 </form>
-
+                <p>&nbsp;</p>
+                
+                <p><button class="btn btn-secondary" id="myB">Tester</button></p>
               </div>
             </div>
+
 
             </div>
         </div>
@@ -135,7 +126,189 @@
         integrity="sha384-Piv4xVNRyMGpqkS2by6br4gNJ7DXjqk09RmUpJ8jgGtD7zP9yug3goQfGII0yAns" 
         crossorigin="anonymous"></script>
 
+        <script src="https://cdn.jsdelivr.net/npm/vanillajs-datepicker@1.2.0/dist/js/datepicker-full.min.js"></script>
+        <script src="https://unpkg.com/notie"></script>
+        <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+  let attention = Prompt();
+  
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
+(() => {
+  'use strict'
 
-    </body>
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  const forms = document.querySelectorAll('.needs-validation')
 
-    </html>
+  // Loop over them and prevent submission
+  Array.from(forms).forEach(form => {
+    form.addEventListener('submit', event => {
+      if (!form.checkValidity()) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+
+      form.classList.add('was-validated')
+    }, false)
+  })
+})()
+
+const elem = document.getElementById('rDates');
+const rangepicker = new DateRangePicker(elem, {
+  // ...options
+  format: "yyyy-mm-dd"
+}); 
+
+document.getElementById("myB").addEventListener("click", function(){
+  let myHtml = `
+  <form id="check-form" action="" method="post" novalidate class="needs-validation">
+    
+        <div class="row" id="rDates-m">
+          <div class="col">
+          <input disabled required type="text" name="start" id="start-m" placeholder="Arrival" autocomplete="off">
+          </div>
+          <div class="col">
+          <input disabled required type="text" name="end" id="end-m" placeholder="Departure" autocomplete="off">
+          </div>
+        </div>
+
+  </form>
+  `
+  
+  //  notify("Great, you made it!","success");
+   // notify("Something went wrong!","error");
+   // notify("Warning!","warning");
+
+  //showModal("Error","Wanna continue?", "error", "Cool!");
+   //attention.toast({msg:"Hi there!"});
+   //attention.success({msg:"Yabadabadoo!"});
+   //attention.error({msg:"Darn!"});
+   attention.custom({msg:myHtml, title: "Title"});
+  });
+function notify(msg, msgType){
+  notie.alert({
+    type: msgType,//Number|String, // optional, default = 4, enum: [1, 2, 3, 4, 5, 'success', 'warning', 'error', 'info', 'neutral']
+    text: msg
+    //stay: Boolean, // optional, default = false
+    //time: Number, // optional, default = 3, minimum = 1,
+   //position: String // optional, default = 'top', enum: ['top', 'bottom']
+})
+}
+
+function showModal(title, text, icon, buttonText){
+  Swal.fire({
+  title: title,//'Error!',
+  html: text,//'Do you want to continue',
+  icon: icon,//'error',
+  confirmButtonText: buttonText//'Cool'
+})
+}
+
+function Prompt() {
+  let toast = function(c) {
+    const {
+      msg = "",
+      icon = "success",
+      pos = "top-end"
+    } = c;
+
+    const Toast = Swal.mixin({
+      toast: true,
+      title: msg,
+      icon: icon,
+      position: pos,//'top-end',
+      showConfirmButton: false,
+      timer: 3000,
+      timerProgressBar: true,
+      didOpen: (toast) => {
+         toast.addEventListener('mouseenter', Swal.stopTimer)
+          toast.addEventListener('mouseleave', Swal.resumeTimer)
+      }
+    })
+
+    Toast.fire({})
+  }
+  
+  let success = function(c) {
+    const {
+      icon = "success",
+      msg = "",
+      title = "",
+      buttonText = "Cool!",
+      footer = ""
+    } = c;
+
+    Swal.fire({
+      title: title,//'Error!',
+      html: msg,//'Do you want to continue',
+      icon: icon,//'error',
+      confirmButtonText: buttonText//'Cool'
+    })
+  }
+
+  let error = function(c) {
+    const {
+      icon = "error",
+      msg = "",
+      title = "",
+      buttonText = "Oh, OK!",
+      footer = ""
+    } = c;
+
+    Swal.fire({
+      title: title,
+      html: msg,
+      icon: icon,
+      confirmButtonText: buttonText
+    })
+  }
+
+  let custom = async function(c) {
+    const {
+      icon = "success",
+      msg = "",
+      title = "",
+      buttonText = "Cool!",
+      footer = ""
+    } = c;
+
+    const { value: formValues } = await Swal.fire({
+  title: title,
+  html: msg,
+  backdrop: false,
+  focusConfirm: false,
+  showCancelButton: true,
+  willOpen: () => {
+    const elem = document.getElementById("rDates-m");
+    const rp = new DateRangePicker(elem, {
+      format: "yyyy-mm-dd",
+      showOnFocus: true
+    })
+  },
+  preConfirm: () => {
+    return [
+      document.getElementById('start-m').value,
+      document.getElementById('end-m').value
+    ]
+  },
+  didOpen: () => {
+    document.getElementById("start-m").removeAttribute("disabled");
+    document.getElementById("end-m").removeAttribute("disabled");
+  }
+})
+
+if (formValues) {
+  Swal.fire(JSON.stringify(formValues))
+}
+  }
+
+  return {
+    toast: toast,
+    success: success,
+    error: error,
+    custom: custom
+  }
+}
+</script>
+
+  </body>
+</html>
