@@ -1,0 +1,104 @@
+{{template "base" .}}
+
+{{define "content"}}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <img src="/static/images/generals.png" alt="" class="img-fluid img-thumbnail mx-auto d-block room-image">
+        </div>
+    </div>
+
+    <div class="row">
+            <div class="col">
+                <h1 class="text-center mt-4">General's Quarters</h1>
+                <p>
+                    Your home away from home, set on the majestic waters of the Atlantic Ocean, this will be a vacation to remember.
+                    Your home away from home, set on the majestic waters of the Atlantic Ocean, this will be a vacation to remember.
+                    Your home away from home, set on the majestic waters of the Atlantic Ocean, this will be a vacation to remember.
+                    Your home away from home, set on the majestic waters of the Atlantic Ocean, this will be a vacation to remember.
+                    Your home away from home, set on the majestic waters of the Atlantic Ocean, this will be a vacation to remember.
+                    Your home away from home, set on the majestic waters of the Atlantic Ocean, this will be a vacation to remember.
+                </p>
+            </div>
+        </div>
+
+
+        <div class="row">
+
+            <div class="col text-center">
+
+                <a id="bookBtn" href="#!" class="btn btn-success">Book This Room Now</a>
+
+            </div>
+        </div>
+
+    </div>
+
+{{end}}
+
+{{define "js"}}
+    <script>
+      document.getElementById("bookBtn").addEventListener("click", function(){
+let myHtml = `
+<form id="check-form" action="" method="post" novalidate class="needs-validation">
+
+   <div class="row" id="rDates-m">
+     <div class="col">
+     <input disabled required type="text" name="start" id="start-m" placeholder="Arrival" autocomplete="off">
+     </div>
+     <div class="col">
+     <input disabled required type="text" name="end" id="end-m" placeholder="Departure" autocomplete="off">
+     </div>
+   </div>
+
+</form>
+`
+
+//  notify("Great, you made it!","success");
+// notify("Something went wrong!","error");
+// notify("Warning!","warning");
+
+//showModal("Error","Wanna continue?", "error", "Cool!");
+//attention.toast({msg:"Hi there!"});
+//attention.success({msg:"Yabadabadoo!"});
+//attention.error({msg:"Darn!"});
+    attention.custom({
+        msg:myHtml, 
+        title: "Title",
+
+        willOpen: () => {
+            const elem = document.getElementById("rDates-m");
+            const rp = new DateRangePicker(elem, {
+            format: "yyyy-mm-dd",
+            showOnFocus: true
+            })
+        },
+
+        didOpen: () => {
+            document.getElementById("start-m").removeAttribute("disabled");
+            document.getElementById("end-m").removeAttribute("disabled");
+        },
+
+        callback: function(result){
+            console.log("submitted!");
+            
+            let form = document.getElementById("check-form");
+            let formData = new FormData(form);
+            formData.append("csrf_token","{{.CSRFToken}}")
+
+            fetch('/search-availability-json',{
+                method: "post",
+                body: formData
+            })
+                .then(response => response.json())
+                .then( data => {
+                    console.log(data);
+                    console.log(data.ok);
+                    console.log(data.message);
+                })
+        }
+
+    });
+});
+    </script>
+{{end}}
