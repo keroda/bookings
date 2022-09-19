@@ -6,6 +6,7 @@ import (
 	"net/http"
 
 	"github.com/keroda/bookings/internal/config"
+	"github.com/keroda/bookings/internal/forms"
 	"github.com/keroda/bookings/internal/models"
 	"github.com/keroda/bookings/internal/render"
 )
@@ -50,7 +51,40 @@ func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
 
 // Reservation page handler
 func (m *Repository) Reservation(w http.ResponseWriter, r *http.Request) {
-	render.RenderTemplate(w, r, "make-reservation.page.html", &models.TemplateData{})
+	render.RenderTemplate(w, r, "make-reservation.page.html", &models.TemplateData{
+		Form: forms.New(nil),
+	})
+}
+
+// Reservation page handler
+func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	reservation := models.Reservation{
+		FirstName: r.Form.Get("fname"),
+		LastName:  r.Form.Get("lname"),
+		Email:     r.Form.Get("email"),
+		Phone:     r.Form.Get("phone"),
+	}
+
+	form := forms.New(r.PostForm)
+
+	form.Has("fname", r)
+
+	if !form.Valid() {
+		data := make(map[string]interface{})
+		data["reservation"] = reservation
+
+		render.RenderTemplate(w, r, "make-reservation.page.html", &models.TemplateData{
+			Form: form,
+			Data: data,
+		})
+		return
+	}
 }
 
 // Generals page handler
