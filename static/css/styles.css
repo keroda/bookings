@@ -16,5 +16,5 @@
     margin-top: 1rem;
   }
   .redText {color:red;font-weight:600;}
-  .datepicker {z-index:2;}
+  .datepicker {z-index:10000;}
   .swal2-html-container {overflow: visible !important;}

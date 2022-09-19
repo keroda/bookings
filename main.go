@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/keroda/bookings/pkg/config"
-	"github.com/keroda/bookings/pkg/handlers"
-	"github.com/keroda/bookings/pkg/render"
+	"github.com/keroda/bookings/internal/config"
+	"github.com/keroda/bookings/internal/handlers"
+	"github.com/keroda/bookings/internal/render"
 
 	"github.com/alexedwards/scs/v2"
 )
