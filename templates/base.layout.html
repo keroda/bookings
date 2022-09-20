@@ -125,10 +125,10 @@ text: msg
 
 function showModal(title, text, icon, buttonText){
 Swal.fire({
-title: title,//'Error!',
-html: text,//'Do you want to continue',
-icon: icon,//'error',
-confirmButtonText: buttonText//'Cool'
+  title: title,//'Error!',
+  html: text,//'Do you want to continue',
+  icon: icon,//'error',
+  confirmButtonText: buttonText//'Cool'
 })
 }
 
@@ -247,6 +247,25 @@ custom: custom
 }
 }
 </script>
+
+<!-- workAround to avoid template syntax creating errors when inside JS -->
+{{with .Error}}
+<script>
+notify("{{.}}", "error");
+</script>
+{{end}}
+
+{{with .Flash}}
+<script>
+notify("{{.}}", "success");
+</script>
+{{end}}
+
+{{with .Warning}}
+<script>
+notify("{{.}}", "success");
+</script>
+{{end}}
 
 </body>
 </html>

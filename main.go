@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/gob"
 	"fmt"
 	"log"
 	"net/http"
@@ -8,6 +9,7 @@ import (
 
 	"github.com/keroda/bookings/internal/config"
 	"github.com/keroda/bookings/internal/handlers"
+	"github.com/keroda/bookings/internal/models"
 	"github.com/keroda/bookings/internal/render"
 
 	"github.com/alexedwards/scs/v2"
@@ -19,6 +21,9 @@ var app config.AppConfig
 var session *scs.SessionManager
 
 func main() {
+	//what to put into the session
+	gob.Register(models.Reservation{})
+
 	//change to true for production (https)
 	app.InProduction = false
 
