@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"encoding/gob"
+	"fmt"
 	"log"
 	"net/http"
 	"os"
@@ -14,6 +15,7 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/justinas/nosurf"
 	"github.com/keroda/bookings/internal/config"
+	"github.com/keroda/bookings/internal/driver"
 	"github.com/keroda/bookings/internal/models"
 	"github.com/keroda/bookings/internal/render"
 )
@@ -46,6 +48,15 @@ func getRoutes() http.Handler {
 
 	app.Session = session
 
+	//connect to database
+	log.Println("Connecting to database...")
+	db, err := driver.ConnectSQL(driver.MyDb)
+	if err != nil {
+		log.Fatal("Cannot connect to database!", err)
+	}
+	fmt.Println("Connected to database")
+	defer db.Close()
+
 	tc, err := CreateTestTemplatecache()
 	if err != nil {
 		log.Fatal("cannot create template cache")
@@ -54,7 +65,7 @@ func getRoutes() http.Handler {
 	app.TemplateCache = tc
 	app.UseCache = true
 
-	repo := NewRepo(&app)
+	repo := NewRepo(&app, db)
 	NewHandlers(repo)
 
 	render.NewTemplates(&app)

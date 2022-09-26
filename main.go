@@ -8,7 +8,9 @@ import (
 	"os"
 	"time"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/keroda/bookings/internal/config"
+	"github.com/keroda/bookings/internal/driver"
 	"github.com/keroda/bookings/internal/handlers"
 	"github.com/keroda/bookings/internal/helpers"
 	"github.com/keroda/bookings/internal/models"
@@ -25,10 +27,11 @@ var infoLog *log.Logger
 var errorLog *log.Logger
 
 func main() {
-	err := run()
+	db, err := run()
 	if err != nil {
 		log.Fatal(err)
 	}
+	defer db.Close()
 
 	fmt.Printf("Started app on port %s", portNumber)
 
@@ -40,7 +43,7 @@ func main() {
 	log.Fatal(err)
 }
 
-func run() error {
+func run() (*pgxpool.Pool, error) {
 	//what to put into the session
 	gob.Register(models.Reservation{})
 
@@ -61,18 +64,28 @@ func run() error {
 
 	app.Session = session
 
+	//connect to database
+	log.Println("Connecting to database...")
+	db, err := driver.ConnectSQL(driver.MyDb)
+	if err != nil {
+		log.Fatal("Cannot connect to database!", err)
+	}
+	fmt.Println("Connected to database")
+
 	tc, err := render.CreateTemplatecache()
 	if err != nil {
 		log.Fatal("cannot create template cache")
-		return (err)
+		return nil, err
 	}
 
 	app.TemplateCache = tc
 	app.UseCache = false
 
-	repo := handlers.NewRepo(&app)
+	repo := handlers.NewRepo(&app, db)
+
 	handlers.NewHandlers(repo)
 	render.NewTemplates(&app)
 	helpers.NewHelpers(&app)
-	return nil
+
+	return db, nil
 }

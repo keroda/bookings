@@ -4,23 +4,28 @@ import (
 	"encoding/json"
 	"net/http"
 
+	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/keroda/bookings/internal/config"
 	"github.com/keroda/bookings/internal/forms"
 	"github.com/keroda/bookings/internal/helpers"
 	"github.com/keroda/bookings/internal/models"
 	"github.com/keroda/bookings/internal/render"
+	"github.com/keroda/bookings/internal/repository"
+	"github.com/keroda/bookings/internal/repository/dbrepo"
 )
 
 var Repo *Repository
 
 type Repository struct {
 	App *config.AppConfig
+	DB  repository.DatabaseRepo
 }
 
 // create new repository
-func NewRepo(a *config.AppConfig) *Repository {
+func NewRepo(a *config.AppConfig, db *pgxpool.Pool) *Repository {
 	return &Repository{
 		App: a,
+		DB:  dbrepo.NewPostgresRepo(db, a),
 	}
 }
 
@@ -44,6 +49,7 @@ func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
 	// remoteIP := m.App.Session.GetString(r.Context(), "remote_ip")
 	// stringMap["remote_ip"] = remoteIP
 
+	//m.DB.AllUsers()
 	render.RenderTemplate(w, r, "about.page.html", &models.TemplateData{})
 }
 
