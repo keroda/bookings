@@ -1,0 +1,27 @@
+{{template "base" .}}
+
+{{define "content"}}
+<div class="container-fluid">
+    <div class="row">
+      <div class="col">
+        <img src="/static/images/rosie_the_riveter.jpg" alt="" class="img-fluid img-thumbnail mx-auto d-block room-image">
+      </div>      
+    </div>
+  
+  
+          <div class="row">
+              <div class="col">
+                  <h1 class="text-center mt-4">Choose a room</h1>
+                  <p class="text-center">
+                      {{$rooms := index .Data "rooms"}}
+
+                      {{range $rooms}}
+                        {{.RoomName}}<br>
+                      {{end}}
+                  </p>
+              </div>
+          </div>
+  
+  
+      </div>
+{{end}}

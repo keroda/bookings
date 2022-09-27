@@ -114,6 +114,30 @@
                     class="form-control {{with .Form.Errors.Get "phone"}} is-invalid {{end}}">
             </div>
 
+
+
+            <div class="form-group">
+              <label for="start_date">Arrival date:</label>
+              {{with .Form.Errors.Get "start_date"}}
+                <label class="text-danger">{{.}}</label>
+              {{end}}
+              <input type="text" name="start_date"  value="{{$res.Phone}}"
+                  id="start_date" autocomplete="off" 
+                  class="form-control {{with .Form.Errors.Get "start_date"}} is-invalid {{end}}">
+          </div>
+
+          <div class="form-group">
+            <label for="end_date">Departure date:</label>
+            {{with .Form.Errors.Get "end_date"}}
+              <label class="text-danger">{{.}}</label>
+            {{end}}
+            <input type="text" name="end_date"  value="{{$res.Phone}}"
+                id="end_date" autocomplete="off" 
+                class="form-control {{with .Form.Errors.Get "end_date"}} is-invalid {{end}}">
+        </div>
+
+          <input type="hidden" name="room_id" value="1">
+
             <input type="submit" class="btn btn-primary" value="Make reservation">
                 </form>
         </div>
