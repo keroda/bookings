@@ -82,7 +82,7 @@ func (m *postgresRepo) SearchAvailabilityAllRooms(start, end time.Time) ([]model
 	defer cancel()
 
 	var rooms []models.Room
-	sql := `select r.id, r.name
+	sql := `select r.id, r.room_name
 	from rooms r
 	where r.id not in (
 		select rr.room_id from room_restrictions rr
@@ -104,4 +104,22 @@ func (m *postgresRepo) SearchAvailabilityAllRooms(start, end time.Time) ([]model
 	}
 
 	return rooms, err
+}
+
+func (m *postgresRepo) GetRoomByID(id int) (models.Room, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var room models.Room
+	sql := `SELECT r.id, r.room_name, r.created_at, r.updated_at FROM rooms r WHERE r.room_id = $1`
+
+	row := m.DB.QueryRow(ctx, sql, id)
+	err := row.Scan(
+		&room.ID,
+		&room.RoomName,
+		&room.CreatedAt,
+		room.UpdatedAt,
+	)
+
+	return room, err
 }

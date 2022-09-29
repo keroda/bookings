@@ -54,15 +54,59 @@ let myHtml = `
 </form>
 `
 
-//  notify("Great, you made it!","success");
-// notify("Something went wrong!","error");
-// notify("Warning!","warning");
+    attention.custom({
+        msg:myHtml, 
+        title: "Choose your dates",
 
-//showModal("Error","Wanna continue?", "error", "Cool!");
-//attention.toast({msg:"Hi there!"});
-//attention.success({msg:"Yabadabadoo!"});
-//attention.error({msg:"Darn!"});
-attention.custom({msg:myHtml, title: "Title"});
+        willOpen: () => {
+            const elem = document.getElementById("rDates-m");
+            const rp = new DateRangePicker(elem, {
+            format: "yyyy-mm-dd",
+            showOnFocus: true,
+            minDate: new Date(),
+            })
+        },
+
+        didOpen: () => {
+            document.getElementById("start-m").removeAttribute("disabled");
+            document.getElementById("end-m").removeAttribute("disabled");
+        },
+
+        callback: function(result){
+            console.log("submitted!");
+            
+            let form = document.getElementById("check-form");
+            let formData = new FormData(form);
+            formData.append("csrf_token","{{.CSRFToken}}")
+            formData.append("room_id","2")
+
+            fetch('/search-availability-json',{
+                method: "post",
+                body: formData
+            })
+                .then(response => response.json())
+                .then( data => {
+                    if (data.ok) {
+                        attention.custom({
+                            icon: "success",
+                            showConfirmButton: false,
+                            msg: "<p>Room is available</p>"
+                                + "<p><a href=\"/book-room?"
+                                    +"id="+data.room_id
+                                    +"&start="+data.start_date
+                                    +"&end="+data.end_date                                    
+                                    +"\" class=\"btn btn-primary\">"
+                                + "Book now!</a></p>"
+                        })
+                    } else {
+                        attention.error({
+                            msg: "Sorry, room is not available"
+                        })                    
+                    }
+                })
+        }
+
+    });
 });
     </script>
 {{end}}
