@@ -5,6 +5,7 @@ import (
 	"text/template"
 
 	"github.com/alexedwards/scs/v2"
+	"github.com/keroda/bookings/internal/models"
 )
 
 type AppConfig struct {
@@ -14,4 +15,5 @@ type AppConfig struct {
 	ErrorLog      *log.Logger
 	InProduction  bool
 	Session       *scs.SessionManager
+	MailChan      chan models.MailData
 }

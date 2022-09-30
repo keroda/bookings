@@ -32,18 +32,6 @@ func TestHandlers(t *testing.T) {
 		{"ms", "/majors-suite", "GET", http.StatusOK},
 		//for max coverage we would need to
 		//test all the get-requests
-
-		//we will test post requests separately
-		// {"post-search-avail", "/search-availability", "POST", []postData{
-		// 	{key: "start", value: "2022-01-01"},
-		// 	{key: "end", value: "2022-01-02"},
-		// }, http.StatusOK},
-		// {"post-reservation", "/make-reservation-json", "POST", []postData{
-		// 	{key: "fname", value: "Bo"},
-		// 	{key: "lname", value: "Yo"},
-		// 	{key: "email", value: "bo@yo.no"},
-		// 	{key: "phone", value: "01234"},
-		// }, http.StatusOK},
 	}
 
 	routes := getRoutes()
@@ -65,16 +53,7 @@ func TestHandlers(t *testing.T) {
 
 func TestRepositoryPostReservation(t *testing.T) {
 
-	//build the for's body
-	// reqBody := "start_date=2030-01-01"
-	// reqBody = fmt.Sprintf("%s&%s", reqBody, "end_date=2030-01-01")
-	// reqBody = fmt.Sprintf("%s&%s", reqBody, "first_name=Johnny")
-	// reqBody = fmt.Sprintf("%s&%s", reqBody, "last_name=January")
-	// reqBody = fmt.Sprintf("%s&%s", reqBody, "email=jo@ja.com")
-	// reqBody = fmt.Sprintf("%s&%s", reqBody, "phone=54321012345")
-	// reqBody = fmt.Sprintf("%s&%s", reqBody, "room_id=1")
-
-	//easier way to build the form body:
+	//build the form's body
 	postedData := url.Values{}
 	postedData.Add("start_date", "2030-01-01")
 	postedData.Add("end_date", "2030-01-02")

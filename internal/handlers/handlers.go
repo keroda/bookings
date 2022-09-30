@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
@@ -178,6 +179,21 @@ func (m *Repository) PostReservation(w http.ResponseWriter, r *http.Request) {
 		http.Redirect(w, r, "/", http.StatusTemporaryRedirect)
 		return
 	}
+
+	//send email with receipt/note to guest
+	note := fmt.Sprintf(`<h1>Here is ypur Bookit! receipt</h1>
+	Dear %s,<br>
+	you have successfully booked a room from %s to %s.<br>
+	Welcome!
+`, reservation.FirstName, reservation.StartDate.Format("2006-01-02"), reservation.EndDate.Format("2006-01-02"))
+	msg := models.MailData{
+		To:       reservation.Email,
+		From:     "bookit@bookit.com",
+		Subject:  "Your Bookit! receipt",
+		Content:  note,
+		Template: "basic.html",
+	}
+	m.App.MailChan <- msg
 
 	m.App.Session.Put(r.Context(), "reservation", reservation)
 

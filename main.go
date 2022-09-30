@@ -33,6 +33,10 @@ func main() {
 	}
 	defer db.Close()
 
+	defer close(app.MailChan)
+	listenForMail()
+	fmt.Println("Started mail listener")
+
 	fmt.Printf("Started app on port %s", portNumber)
 
 	srv := &http.Server{
@@ -49,6 +53,9 @@ func run() (*pgxpool.Pool, error) {
 	gob.Register(models.User{})
 	gob.Register(models.Room{})
 	gob.Register(models.Restriction{})
+
+	mailChan := make(chan models.MailData)
+	app.MailChan = mailChan
 
 	//change to true for production (https)
 	app.InProduction = false
