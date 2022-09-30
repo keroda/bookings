@@ -2,9 +2,11 @@ package dbrepo
 
 import (
 	"context"
+	"errors"
 	"time"
 
 	"github.com/keroda/bookings/internal/models"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (m *postgresRepo) AllUsers() bool {
@@ -118,8 +120,81 @@ func (m *postgresRepo) GetRoomByID(id int) (models.Room, error) {
 		&room.ID,
 		&room.RoomName,
 		&room.CreatedAt,
-		room.UpdatedAt,
+		&room.UpdatedAt,
 	)
 
 	return room, err
+}
+
+func (m *postgresRepo) GetUserByID(id int) (models.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var u models.User
+	sql := `SELECT id, first_name, last_name, email, password, 
+		access_level, created_at, updated_at 
+		FROM users WHERE id = $1`
+
+	row := m.DB.QueryRow(ctx, sql, id)
+	err := row.Scan(
+		&u.ID,
+		&u.FirstName,
+		&u.LastName,
+		&u.Email,
+		&u.Password,
+		&u.AccessLevel,
+		&u.CreatedAt,
+		&u.UpdatedAt,
+	)
+
+	return u, err
+}
+
+func (m *postgresRepo) UpdateUser(u models.User) error {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	sql := `UPDATE users SET 
+		first_name = $1,
+		last_name = $2,
+		email = $3,
+		access_level = $4,
+		updated_at = $5
+		WHERE id = $6
+		`
+
+	_, err := m.DB.Exec(ctx, sql,
+		u.FirstName,
+		u.LastName,
+		u.Email,
+		u.AccessLevel,
+		time.Now(),
+		u.ID)
+
+	return err
+}
+
+func (m *postgresRepo) Authenticate(email, testPassword string) (int, string, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var id int
+	var hashedPassword string
+
+	sql := "SELECT id, apassword FROM users WHERE email = '$1'"
+
+	row := m.DB.QueryRow(ctx, sql, email)
+	err := row.Scan(&id, &hashedPassword)
+	if err != nil {
+		return 0, "", err
+	}
+
+	err = bcrypt.CompareHashAndPassword([]byte(hashedPassword), []byte(testPassword))
+	if err == bcrypt.ErrMismatchedHashAndPassword {
+		return 0, "", errors.New("incorrect password")
+	} else if err != nil {
+		return 0, "", err
+	}
+
+	return id, hashedPassword, nil
 }
