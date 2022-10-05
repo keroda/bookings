@@ -58,12 +58,6 @@ func (m *Repository) Home(w http.ResponseWriter, r *http.Request) {
 
 // about page handler
 func (m *Repository) About(w http.ResponseWriter, r *http.Request) {
-	// stringMap := make(map[string]string)
-	// stringMap["test"] = "Hello again!"
-	// remoteIP := m.App.Session.GetString(r.Context(), "remote_ip")
-	// stringMap["remote_ip"] = remoteIP
-
-	//m.DB.AllUsers()
 	render.Template(w, r, "about.page.html", &models.TemplateData{})
 }
 

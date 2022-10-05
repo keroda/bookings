@@ -20,7 +20,8 @@ const maxDbConns = 10
 const maxDbLifetime = 5 * time.Minute
 
 // urlExample := "postgres://username:password@localhost:5432/database_name"
-const MyDb = "postgres://postgres:kr180360@localhost:5432/test_db"
+// win: "postgres://postgres:kr180360@localhost:5432/test_db"
+const MyDb = "postgres://kjetilrodal:@localhost:5432/bookings"
 
 // create database pool for Postgres
 func ConnectSQL(dsn string) (*pgxpool.Pool, error) {

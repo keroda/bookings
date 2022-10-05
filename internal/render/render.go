@@ -45,9 +45,11 @@ func Template(w http.ResponseWriter, r *http.Request, tmpl string, td *models.Te
 	// get requested page from cache
 	t, ok := tc[tmpl]
 	if !ok {
-		log.Fatal("could not get page template from cache")
-		return errors.New("could not get page template from cache")
-	}
+		log.Fatal("could not get page template from cache(" + tmpl + ")")
+		return errors.New("could not get page template from cache (" + tmpl + ")")
+	} //else {
+	//log.Println("Rendering", tmpl)
+	//}
 
 	buf := new(bytes.Buffer)
 
@@ -77,7 +79,6 @@ func CreateTemplatecache() (map[string]*template.Template, error) {
 	for _, page := range pages {
 		name := filepath.Base(page)
 		ts, err := template.New(name).Funcs(functions).ParseFiles(page)
-		//ts, err := template.New(name).ParseFiles(page)
 		if err != nil {
 			return myCache, err
 		}
