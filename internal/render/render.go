@@ -7,18 +7,25 @@ import (
 	"net/http"
 	"path/filepath"
 	"text/template"
+	"time"
 
 	"github.com/justinas/nosurf"
 	"github.com/keroda/bookings/internal/config"
 	"github.com/keroda/bookings/internal/models"
 )
 
-var functions = template.FuncMap{}
+var functions = template.FuncMap{
+	"niceDate": NiceDate,
+}
 
 var app *config.AppConfig
 
 func NewRenderer(a *config.AppConfig) {
 	app = a
+}
+
+func NiceDate(t time.Time) string {
+	return t.Format("2006-01-02")
 }
 
 var pathToTemplates = "./templates"

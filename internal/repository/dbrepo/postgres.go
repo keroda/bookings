@@ -198,3 +198,49 @@ func (m *postgresRepo) Authenticate(email, testPassword string) (int, string, er
 
 	return id, hashedPassword, nil
 }
+
+func (m *postgresRepo) AllReservations() ([]models.Reservation, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	var reservations []models.Reservation
+
+	sql := `SELECT r.id, r.first_name, r.last_name, r.email, r.phone, r.start_date, r.end_date,
+		r.created_at, r.updated_at,	rm.id, rm.room_name
+	FROM reservations
+	 left join rooms ON r.room_id = rm.id
+	ORDER BY r.start_date ASC`
+
+	rows, err := m.DB.Query(ctx, sql)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var i models.Reservation
+		err = rows.Scan(
+			&i.ID,
+			&i.FirstName,
+			&i.LastName,
+			&i.Email,
+			&i.Phone,
+			&i.StartDate,
+			&i.EndDate,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+			&i.RoomID,
+			&i.Room.RoomName,
+		)
+		if err != nil {
+			return reservations, err
+		}
+		reservations = append(reservations, i)
+	}
+
+	if err = rows.Err(); err != nil {
+		return reservations, err
+	}
+
+	return reservations, nil
+}

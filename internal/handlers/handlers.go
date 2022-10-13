@@ -432,3 +432,29 @@ func (m *Repository) AdminDashboard(w http.ResponseWriter, r *http.Request) {
 
 	render.Template(w, r, "admin-dashboard.page.html", &models.TemplateData{})
 }
+
+func (m *Repository) AdminNewReservation(w http.ResponseWriter, r *http.Request) {
+
+	render.Template(w, r, "admin-new-reservation.page.html", &models.TemplateData{})
+}
+
+func (m *Repository) AdminAllReservations(w http.ResponseWriter, r *http.Request) {
+
+	reservations, err := m.DB.AllReservations()
+	if err != nil {
+		helpers.ServerError(w, err)
+		return
+	}
+
+	data := make(map[string]interface{})
+	data["reservations"] = reservations
+
+	render.Template(w, r, "admin-all-reservations.page.html", &models.TemplateData{
+		Data: data,
+	})
+}
+
+func (m *Repository) AdminCalendar(w http.ResponseWriter, r *http.Request) {
+
+	render.Template(w, r, "admin-calendar.page.html", &models.TemplateData{})
+}
