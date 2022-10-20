@@ -77,7 +77,7 @@
               Departure: {{index .StringMap "end_date"}}
             </p>
 
-            <form action="" method="post" class="needs-validation" novalidation>
+            <form action="/make-reservation" method="post" class="needs-validation" novalidation>
             
               <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
               <input type="hidden" name="start_date" value="{{index .StringMap "start_date"}}">

@@ -63,3 +63,63 @@ func (m *testDBRepo) AllReservations() ([]models.Reservation, error) {
 
 	return reservations, nil
 }
+
+func (m *testDBRepo) AllNewReservations() ([]models.Reservation, error) {
+
+	var reservations []models.Reservation
+
+	return reservations, nil
+}
+
+func (m *testDBRepo) GetReservationById(id int) (models.Reservation, error) {
+	var res models.Reservation
+
+	return res, nil
+}
+
+func (m *testDBRepo) UpdateReservation(r models.Reservation) error {
+
+	return nil
+}
+
+func (m *testDBRepo) DeleteReservation(id int) error {
+
+	return nil
+}
+
+func (m *testDBRepo) UpdateProcessedRservation(id int, processed int) error {
+	return nil
+}
+
+func (m *testDBRepo) AllRooms() ([]models.Room, error) {
+	var rooms []models.Room
+	return rooms, nil
+}
+
+func (m *testDBRepo) GetRoomRestrictionsByDate(roomID int, start, end time.Time) ([]models.RoomRestriction, error) {
+
+	var restrictions []models.RoomRestriction
+
+	return restrictions, nil
+}
+
+func (m *testDBRepo) InsertBlockForRoom(id int, startDate time.Time) error {
+
+	return nil
+}
+
+func (m *testDBRepo) DeleteBlockById(id int) error {
+	// ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	// defer cancel()
+
+	// sql := `
+	// 	DELETE FROM room_restrictions WHERE id = $1
+	// `
+	// _, err := m.DB.Exec(ctx, sql, id)
+	// if err != nil{
+	// 	log.Println(err)
+	// 	return err
+	// }
+
+	return nil
+}

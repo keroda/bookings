@@ -81,12 +81,12 @@ function Prompt() {
         c.willOpen();
       }
     },
-    preConfirm: () => {
-    return [
-     document.getElementById('start-m').value,
-     document.getElementById('end-m').value
-    ]
-    },
+    // preConfirm: () => {
+    // return [
+    //  document.getElementById('start-m').value,
+    //  document.getElementById('end-m').value
+    // ]
+    // },
     didOpen: () => {
       if (c.didOpen !== undefined){
         c.didOpen();

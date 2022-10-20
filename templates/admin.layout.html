@@ -10,6 +10,7 @@
         <!-- plugins:css -->
         <link rel="stylesheet" href="/static/admin/vendors/ti-icons/css/themify-icons.css">
         <link rel="stylesheet" href="/static/admin/vendors/base/vendor.bundle.base.css">
+        <link rel="stylesheet" type="text/css" href="https://unpkg.com/notie/dist/notie.min.css">
         <!-- endinject -->
         <!-- plugin css for this page -->
         <!-- End plugin css for this page -->
@@ -17,6 +18,12 @@
         <link rel="stylesheet" href="/static/admin/css/style.css">
         <!-- endinject -->
         <link rel="shortcut icon" href="/static/admin/images/favicon.png"/>
+
+        <style>
+            .content-wrapper {background: white;}
+            label {font-weight: bold;}
+            .notie-container {z-index:50000;}
+        </style>
 
         {{block "css" . }}
 
@@ -134,6 +141,53 @@
     <!-- Custom js for this page-->
     <script src="/static/admin/js/dashboard.js"></script>
     <!-- End custom js for this page-->
+
+    <script src="https://unpkg.com/notie"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="/static/js/app.js"></script>
+ 
+    <script>
+        let attention = Prompt();
+
+        function notify(msg, msgType){
+notie.alert({
+type: msgType,//Number|String, // optional, default = 4, enum: [1, 2, 3, 4, 5, 'success', 'warning', 'error', 'info', 'neutral']
+text: msg
+//stay: Boolean, // optional, default = false
+//time: Number, // optional, default = 3, minimum = 1,
+//position: String // optional, default = 'top', enum: ['top', 'bottom']
+})
+}
+
+function showModal(title, text, icon, buttonText){
+Swal.fire({
+  title: title,//'Error!',
+  html: text,//'Do you want to continue',
+  icon: icon,//'error',
+  confirmButtonText: buttonText//'Cool'
+})
+}
+
+</script>
+
+<!-- workAround to avoid template syntax creating errors when inside JS -->
+{{with .Error}}
+<script>
+notify("{{.}}", "error");
+</script>
+{{end}}
+
+{{with .Flash}}
+<script>
+notify("{{.}}", "success");
+</script>
+{{end}}
+
+{{with .Warning}}
+<script>
+notify("{{.}}", "success");
+</script>
+{{end}}
 
     {{block "js" . }}
 

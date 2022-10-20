@@ -1,0 +1,121 @@
+{{template "admin" .}}
+
+{{define "page-title"}}
+See/edit reservation
+{{end}}
+
+{{define "content"}}
+    {{$res := index .Data "reservation"}}
+    {{$src := index .StringMap "src"}}
+    <div class="col-md-12">
+        <h1>Reservation no. {{$res.ID}}</h1>
+
+        <p>
+Arrival: {{niceDate $res.StartDate}}
+<br>Departure: {{niceDate $res.EndDate}}
+<br>Room: {{$res.Room.RoomnName}}
+        </p>
+
+
+        <form action="/admin/reservations/{{$src}}/{{$res.ID}}" method="post" class="needs-validation" novalidation>
+            
+            <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+     
+          <div class="form-group mt-5">
+              <label for="fname">First name:</label>
+              {{with .Form.Errors.Get "fname"}}
+                <label class="text-danger">{{.}}</label>
+              {{end}}
+              <input type="text" name="fname" value="{{$res.FirstName}}"
+                  id="fname" autocomplete="off" 
+                  class="form-control {{with .Form.Errors.Get "fname"}} is-invalid {{end}}">
+          </div>
+
+          <div class="form-group">
+              <label for="lname">Last name:</label>
+              {{with .Form.Errors.Get "lname"}}
+                <label class="text-danger">{{.}}</label>
+              {{end}}
+              <input type="text" name="lname" value="{{$res.LastName}}"
+                  id="lname" autocomplete="off" 
+                  class="form-control {{with .Form.Errors.Get "lname"}} is-invalid {{end}}">
+          </div>
+
+          <div class="form-group">
+              <label for="email">Email:</label>
+              {{with .Form.Errors.Get "email"}}
+                <label class="text-danger">{{.}}</label>
+              {{end}}
+              <input type="text" name="email"  value="{{$res.Email}}"
+                  id="email" autocomplete="off" 
+                  class="form-control {{with .Form.Errors.Get "email"}} is-invalid {{end}}">
+          </div>
+
+          <div class="form-group">
+              <label for="phone">Phone:</label>
+              {{with .Form.Errors.Get "phone"}}
+                <label class="text-danger">{{.}}</label>
+              {{end}}
+              <input type="tel" name="phone"  value="{{$res.Phone}}"
+                  id="phone" autocomplete="off" 
+                  class="form-control {{with .Form.Errors.Get "phone"}} is-invalid {{end}}">
+          </div>
+
+
+        
+        <div class="float-left">
+            <input type="hidden" name="resId" value="{{$res.ID}}" id="resId">
+
+          <input type="submit" class="btn btn-primary" value="Save reservation">
+          {{if eq $src "cal"}}
+          <a href="#!" onclick="window.history.go(-1)" class="btn btn-warning">Cancel</a>
+          {{else}}
+          <a href="/admin/reservations-{{$src}}" class="btn btn-warning">Cancel</a>
+          {{end}}
+          <a href="#!" class="btn btn-info" onclick="processRes()">Mark as processed</a>          
+        </div>
+        <div class="float-right">
+          <a href="#!" class="btn btn-info" onclick="deleteRes()">Delete</a>
+              </form>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+{{end}}
+
+{{define "js"}}
+    {{$src := index .StringMap "src"}}
+<script>
+
+//some template code inside JS give errors: workaround:
+//rewrite the  res.ID in the onclick JS  to sit in an element with an ID
+//then get that and use it in the JS instead
+let resId = document.getElementById('resId').value;
+let rid = "{{$res.ID}}"; //put into a string it also works, directly, it shows as an error 
+
+    function processRes(){
+        attention.custom({
+            icon: 'warning',
+            msg: 'Sure to mark as processed?',
+            callback: function(result){
+                if (result !== false){
+                    window.location.href = "/admin/processed/{{$.src}}/"+resId;
+                }
+            }
+
+        })
+    }
+    function deleteRes(){
+        attention.custom({
+            icon: 'warning',
+            msg: 'Sure to delete?',
+            callback: function(result){
+                if (result !== false){
+                    window.location.href = "/admin/delete-reservation/{{$.src}}/"+resId;
+                }
+            }
+
+        })
+    }
+</script>
+
+{{end}}
