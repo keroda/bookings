@@ -20,6 +20,8 @@ Arrival: {{niceDate $res.StartDate}}
         <form action="/admin/reservations/{{$src}}/{{$res.ID}}" method="post" class="needs-validation" novalidation>
             
             <input type="hidden" name="csrf_token" value="{{.CSRFToken}}">
+            <input type="hidden" name="year" value="{{index .StringMap "year"}}">
+            <input type="hidden" name="month" value="{{index .StringMap "month"}}">
      
           <div class="form-group mt-5">
               <label for="fname">First name:</label>
@@ -72,7 +74,9 @@ Arrival: {{niceDate $res.StartDate}}
           {{else}}
           <a href="/admin/reservations-{{$src}}" class="btn btn-warning">Cancel</a>
           {{end}}
+          {{if eq $res.Processed 0}}
           <a href="#!" class="btn btn-info" onclick="processRes()">Mark as processed</a>          
+          {{end}}
         </div>
         <div class="float-right">
           <a href="#!" class="btn btn-info" onclick="deleteRes()">Delete</a>
@@ -91,6 +95,7 @@ Arrival: {{niceDate $res.StartDate}}
 //then get that and use it in the JS instead
 let resId = document.getElementById('resId').value;
 let rid = "{{$res.ID}}"; //put into a string it also works, directly, it shows as an error 
+let myQ = '/do?y{{index .StringMap "year"}}=&m={{index .StringMap "month"}}'
 
     function processRes(){
         attention.custom({
@@ -98,7 +103,7 @@ let rid = "{{$res.ID}}"; //put into a string it also works, directly, it shows a
             msg: 'Sure to mark as processed?',
             callback: function(result){
                 if (result !== false){
-                    window.location.href = "/admin/processed/{{$.src}}/"+resId;
+                    window.location.href = '/admin/processed/{{$.src}}/'+resId+myQ;
                 }
             }
 
@@ -110,7 +115,7 @@ let rid = "{{$res.ID}}"; //put into a string it also works, directly, it shows a
             msg: 'Sure to delete?',
             callback: function(result){
                 if (result !== false){
-                    window.location.href = "/admin/delete-reservation/{{$.src}}/"+resId;
+                    window.location.href = '/admin/delete-reservation/{{$.src}}/'+resId+myQ;
                 }
             }
 
